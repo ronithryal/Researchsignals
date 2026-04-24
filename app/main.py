@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 
+from app.api.routes.phase4 import router as phase4_router
+
 app = FastAPI(title="DeFi Signal Terminal")
 
 # serve the frontend prototype
@@ -19,3 +21,4 @@ async def health():
 
 
 # routers added in later phases
+app.include_router(phase4_router)
