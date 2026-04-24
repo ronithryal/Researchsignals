@@ -28,7 +28,7 @@ def _headers() -> dict:
 
 
 def create_inbox(username: str) -> dict:
-    """Create a new inbox. Returns {address, username, ...}."""
+    """Create a new inbox. Returns {email, inbox_id, ...}."""
     resp = httpx.post(
         f"{BASE_URL}/inboxes",
         headers=_headers(),
@@ -36,7 +36,10 @@ def create_inbox(username: str) -> dict:
         timeout=10,
     )
     resp.raise_for_status()
-    return resp.json()
+    data = resp.json()
+    # Normalize response: add 'address' key pointing to email for backward compat
+    data["address"] = data.get("email", data.get("inbox_id", ""))
+    return data
 
 
 def list_emails(address: str, limit: int = 10) -> list[dict]:
@@ -48,7 +51,8 @@ def list_emails(address: str, limit: int = 10) -> list[dict]:
         timeout=10,
     )
     resp.raise_for_status()
-    return resp.json().get("threads", [])
+    data = resp.json()
+    return data.get("threads", []) if isinstance(data, dict) else data
 
 
 def get_email_body(address: str, thread_id: str) -> str:
