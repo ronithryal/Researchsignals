@@ -23,7 +23,7 @@ originSessionId: e4f313f4-e654-421b-9b98-fea7e450bb4e
 | **2** | Database — 8 SQLAlchemy models, Alembic config, initial migration, `.env.example` | ✅ Done | Haiku 4.5 | Schema design done |
 | **3** | Core modules — `fetch_new_posts`, `run_clustering`, `score_cluster`, `enrich_protocol`, `generate_brief` | ✅ Done | Sonnet 4.6 | Done this session |
 | **4** | FastAPI routes — `/api/posts`, `/api/clusters`, `/api/clusters/{id}/brief`, `/api/protocols/{id}`, `/api/alerts`, `/api/ingestion/status` | ✅ Done | Sonnet 4.6 (routes) / Haiku 4.5 (alert CRUD) | Module wiring needs judgment |
-| **5** | Frontend UI — static HTML dashboard: top clusters by alpha score, cluster detail, protocol search, alert config | ⬜ | Sonnet 4.6 or Gemini 2.5 Pro | Gemini 2.5 Pro if the HTML gets long (large context window); Sonnet 4.6 otherwise |
+| **5** | Frontend UI — static HTML dashboard: top clusters by alpha score, cluster detail, protocol search, alert config | ✅ Done | Sonnet 4.6 or Gemini 2.5 Pro | Wired UI to FastAPI backend endpoints |
 | **6** | APScheduler — ingestion every 30 min, clustering + scoring pipeline, stale-data alert after 120 min | ⬜ | Haiku 4.5 (job wiring) / Sonnet 4.6 (alert logic) | Scheduling boilerplate is cheap; alert conditions need care |
 | **7** | Tests — unit (scoring formula, clustering logic, no DB) + integration (Postgres: ingestion, copilot) | ⬜ | Qwen/Deepseek (unit) / Haiku 4.5 (integration) | Unit tests are formulaic; integration needs DB awareness |
 | **8** | Error handling & retry logic — httpx retries, ingestion fallback, partial failure recovery | ⬜ | Haiku 4.5 | Well-defined patterns |

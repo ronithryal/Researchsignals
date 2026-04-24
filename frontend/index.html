@@ -1786,7 +1786,7 @@
   <div class="toast-region" id="toastRegion" aria-live="polite" aria-label="Notifications"></div>
 
   <script>
-    const now = new Date("2026-04-24T10:52:00-04:00");
+    const now = new Date();
     const weights = {
       attentionVelocity: 0.18,
       sourceQuality: 0.16,
@@ -1798,225 +1798,114 @@
       timeliness: 0.04
     };
 
-    const accounts = [
-      { handle: "defidad", displayName: "DeFi Dad", credibilityTier: "high", role: "educator", weight: 86 },
-      { handle: "stablekwon", displayName: "Stablecoin Research", credibilityTier: "high", role: "researcher", weight: 92 },
-      { handle: "0xMaven", displayName: "0xMaven", credibilityTier: "high", role: "protocol analyst", weight: 89 },
-      { handle: "govwatcher", displayName: "Governance Watcher", credibilityTier: "high", role: "delegate", weight: 84 },
-      { handle: "yieldsmith", displayName: "Yield Smith", credibilityTier: "medium", role: "power user", weight: 76 },
-      { handle: "solverpunk", displayName: "Solver Punk", credibilityTier: "medium", role: "builder", weight: 74 },
-      { handle: "riskadjusted", displayName: "Risk Adjusted", credibilityTier: "high", role: "risk analyst", weight: 88 },
-      { handle: "dexflow", displayName: "DEX Flow", credibilityTier: "medium", role: "trader", weight: 71 },
-      { handle: "newprotocolradar", displayName: "New Protocol Radar", credibilityTier: "watch", role: "curator", weight: 62 }
-    ];
-
-    const protocols = [
-      { id: "sky", name: "Sky", maturity: "mature", category: "CDPs", dashboardMaturity: 93, publicDashboards: 42, analyticsPages: 12, deepKpis: 91, governanceCoverage: 88, revenueCoverage: 86, socialAttention: 66, xUrl: "https://x.com/SkyEcosystem/status/1782414526101000192" },
-      { id: "prisma", name: "Prisma", maturity: "mid-tier", category: "CDPs", dashboardMaturity: 63, publicDashboards: 13, analyticsPages: 5, deepKpis: 58, governanceCoverage: 60, revenueCoverage: 51, socialAttention: 61, xUrl: "https://x.com/PrismaFi/status/1782414526101000193" },
-      { id: "morpho", name: "Morpho", maturity: "mature", category: "Lending", dashboardMaturity: 84, publicDashboards: 31, analyticsPages: 9, deepKpis: 79, governanceCoverage: 75, revenueCoverage: 73, socialAttention: 73, xUrl: "https://x.com/MorphoLabs/status/1782414526101000194" },
-      { id: "fluid", name: "Fluid", maturity: "accelerating", category: "Lending", dashboardMaturity: 48, publicDashboards: 8, analyticsPages: 4, deepKpis: 42, governanceCoverage: 34, revenueCoverage: 37, socialAttention: 79, xUrl: "https://x.com/0xfluid/status/1782414526101000195" },
-      { id: "ethena", name: "Ethena", maturity: "mature", category: "Stablecoins", dashboardMaturity: 78, publicDashboards: 28, analyticsPages: 8, deepKpis: 76, governanceCoverage: 58, revenueCoverage: 70, socialAttention: 82, xUrl: "https://x.com/ethena_labs/status/1782414526101000196" },
-      { id: "resolv", name: "Resolv", maturity: "emerging", category: "Stablecoins", dashboardMaturity: 27, publicDashboards: 3, analyticsPages: 2, deepKpis: 22, governanceCoverage: 16, revenueCoverage: 18, socialAttention: 81, xUrl: "https://x.com/ResolvLabs/status/1782414526101000197" },
-      { id: "euler", name: "Euler", maturity: "mid-tier", category: "Lending", dashboardMaturity: 70, publicDashboards: 17, analyticsPages: 6, deepKpis: 66, governanceCoverage: 64, revenueCoverage: 58, socialAttention: 64, xUrl: "https://x.com/eulerfinance/status/1782414526101000198" },
-      { id: "usdx", name: "USDx Protocol", maturity: "emerging", category: "Stablecoins", dashboardMaturity: 21, publicDashboards: 2, analyticsPages: 1, deepKpis: 18, governanceCoverage: 12, revenueCoverage: 14, socialAttention: 74, xUrl: "https://x.com/usdx_money/status/1782414526101000199" },
-      { id: "aerodrome", name: "Aerodrome", maturity: "mature", category: "DEXs", dashboardMaturity: 82, publicDashboards: 24, analyticsPages: 7, deepKpis: 78, governanceCoverage: 72, revenueCoverage: 74, socialAttention: 69, xUrl: "https://x.com/aerodromefi/status/1782414526101000200" },
-      { id: "angstrom", name: "Angstrom", maturity: "emerging", category: "Intent / solver infrastructure", dashboardMaturity: 18, publicDashboards: 1, analyticsPages: 1, deepKpis: 14, governanceCoverage: 10, revenueCoverage: 8, socialAttention: 67, xUrl: "https://x.com/angstromxyz/status/1782414526101000201" }
-    ];
-
+    let accounts = [];
+    let protocols = [];
     const narratives = [
       "Stablecoins", "CDPs", "Lending", "DEXs", "Perps", "Restaking", "Yield abstraction",
       "Intent / solver infrastructure", "RWAs", "DeFi on L2s", "Governance wars", "Token incentives", "Liquidity migration"
     ];
-
-    const posts = [
-      { postId: "1782414526101000197", authorHandle: "stablekwon", authorDisplayName: "Stablecoin Research", timestamp: -42, textSnippet: "Resolv is getting serious USR attention, but I still cannot find a clean decomposition of collateral duration, hedging counterparties, peg buffers, and yield source fragility.", engagement: { likes: 1280, reposts: 214, replies: 83 }, credibilityWeight: 92, canonicalXUrl: "https://x.com/stablekwon/status/1782414526101000197", hashtags: ["#stablecoins", "#DeFi"] },
-      { postId: "1782414526101000207", authorHandle: "riskadjusted", authorDisplayName: "Risk Adjusted", timestamp: -28, textSnippet: "The interesting part is not USR APY. It is whether the protocol is quietly becoming a synthetic dollar primitive without the analytics stack Ethena now has.", engagement: { likes: 870, reposts: 146, replies: 51 }, credibilityWeight: 88, canonicalXUrl: "https://x.com/riskadjusted/status/1782414526101000207", hashtags: ["#stablecoins"] },
-      { postId: "1782414526101000217", authorHandle: "defidad", authorDisplayName: "DeFi Dad", timestamp: -71, textSnippet: "New stablecoin designs need dashboards before they need threads. Show me collateral mix, redemption depth, venue concentration, insurance buffer, and flow stickiness.", engagement: { likes: 2310, reposts: 384, replies: 104 }, credibilityWeight: 86, canonicalXUrl: "https://x.com/defidad/status/1782414526101000217", hashtags: ["#stablecoins", "#dashboards"] },
-      { postId: "1782414526101000195", authorHandle: "0xMaven", authorDisplayName: "0xMaven", timestamp: -64, textSnippet: "Fluid lending growth is not just TVL. The question is whether smart collateral routing is pulling liquidity from older money markets and changing rate curves.", engagement: { likes: 940, reposts: 172, replies: 62 }, credibilityWeight: 89, canonicalXUrl: "https://x.com/0xMaven/status/1782414526101000195", hashtags: ["#lending"] },
-      { postId: "1782414526101000225", authorHandle: "yieldsmith", authorDisplayName: "Yield Smith", timestamp: -36, textSnippet: "Depositors seem to be moving where automation compresses rate discovery. Fluid has the product surface; still unclear if dashboards show marginal borrower quality.", engagement: { likes: 570, reposts: 82, replies: 38 }, credibilityWeight: 76, canonicalXUrl: "https://x.com/yieldsmith/status/1782414526101000225", hashtags: ["#yield", "#lending"] },
-      { postId: "1782414526101000201", authorHandle: "solverpunk", authorDisplayName: "Solver Punk", timestamp: -53, textSnippet: "Angstrom makes Uniswap v4 intent flow observable in a new way if someone tracks solver competition, MEV rebates, auction clearing, and LP surplus retention.", engagement: { likes: 640, reposts: 132, replies: 44 }, credibilityWeight: 74, canonicalXUrl: "https://x.com/solverpunk/status/1782414526101000201", hashtags: ["#intents", "#DEX"] },
-      { postId: "1782414526101000231", authorHandle: "dexflow", authorDisplayName: "DEX Flow", timestamp: -19, textSnippet: "The first useful Angstrom dashboard should not be volume. It should be solver concentration, failed auction share, rebate leakage, and effective price improvement.", engagement: { likes: 388, reposts: 77, replies: 29 }, credibilityWeight: 71, canonicalXUrl: "https://x.com/dexflow/status/1782414526101000231", hashtags: ["#solvers"] },
-      { postId: "1782414526101000192", authorHandle: "govwatcher", authorDisplayName: "Governance Watcher", timestamp: -180, textSnippet: "Sky has a fresh parameter conversation, but the dashboard surface is deep enough that most of the obvious angles are already crowded.", engagement: { likes: 760, reposts: 88, replies: 41 }, credibilityWeight: 84, canonicalXUrl: "https://x.com/govwatcher/status/1782414526101000192", hashtags: ["#governance", "#CDP"] },
-      { postId: "1782414526101000241", authorHandle: "newprotocolradar", authorDisplayName: "New Protocol Radar", timestamp: -95, textSnippet: "USDx is showing up in stablecoin chats again. Hard to tell whether it is mercenary APY or a durable collateral design shift without better public data.", engagement: { likes: 410, reposts: 63, replies: 24 }, credibilityWeight: 62, canonicalXUrl: "https://x.com/newprotocolradar/status/1782414526101000241", hashtags: ["#stablecoins"] },
-      { postId: "1782414526101000198", authorHandle: "govwatcher", authorDisplayName: "Governance Watcher", timestamp: -74, textSnippet: "Euler incentive debate is moving from emissions to risk-adjusted borrow demand. Worth watching if delegates force more explicit KPI targets.", engagement: { likes: 520, reposts: 91, replies: 47 }, credibilityWeight: 84, canonicalXUrl: "https://x.com/govwatcher/status/1782414526101000198", hashtags: ["#governance", "#lending"] },
-      { postId: "1782414526101000196", authorHandle: "stablekwon", authorDisplayName: "Stablecoin Research", timestamp: -114, textSnippet: "Ethena remains one of the most documented synthetic dollar systems. New research needs a non-obvious basis, venue concentration, or governance angle.", engagement: { likes: 1460, reposts: 238, replies: 92 }, credibilityWeight: 92, canonicalXUrl: "https://x.com/stablekwon/status/1782414526101000196", hashtags: ["#stablecoins"] },
-      { postId: "1782414526101000200", authorHandle: "dexflow", authorDisplayName: "DEX Flow", timestamp: -220, textSnippet: "Aerodrome still owns the Base DEX conversation, but most flow, fees, bribes, and emissions dashboards are already mature.", engagement: { likes: 690, reposts: 80, replies: 27 }, credibilityWeight: 71, canonicalXUrl: "https://x.com/dexflow/status/1782414526101000200", hashtags: ["#DEX", "#Base"] }
-    ];
-
-    const signalClusters = [
-      {
-        id: "sig-resolv-gap",
-        topic: "Resolv collateral analytics gap",
-        protocolId: "resolv",
-        narrativeTags: ["Stablecoins", "Yield abstraction", "Liquidity migration"],
-        postIds: ["1782414526101000197", "1782414526101000207", "1782414526101000217"],
-        attentionVelocity: 91,
-        sourceCredibility: 89,
-        crossClusterSpread: 78,
-        mechanismDensity: 93,
-        investigability: 91,
-        marketSensitivity: 87,
-        timeliness: 96,
-        confidence: 88,
-        stage: "accelerating",
-        publishability: "Worth a deep-dive note",
-        shortThesis: "A synthetic dollar protocol is gaining credible attention faster than its analytics stack is maturing.",
-        whyNow: "Three high-credibility accounts framed the same missing-data problem within the last hour.",
-        nextSteps: ["Map collateral duration and issuer exposure", "Build peg-liquidity depth by venue", "Compare public KPI maturity versus Ethena and Sky", "Track primary demand sources and yield stickiness"],
-        notePanels: {
-          markets: "If USR becomes a collateral leg in lending or liquidity routing, peg confidence and redemption depth become market-sensitive.",
-          nonConsensus: "The conversation is not just APY; the alpha may be the absence of institutional-grade coverage.",
-          missing: "Collateral venues, redemption queue depth, hedge counterparty concentration, and historical peg defense costs.",
-          note: "Resolv as the undercovered synthetic dollar: where yield design, collateral opacity, and dashboard gaps intersect."
-        }
-      },
-      {
-        id: "sig-fluid-routing",
-        topic: "Fluid liquidity routing and lender quality",
-        protocolId: "fluid",
-        narrativeTags: ["Lending", "Yield abstraction", "Liquidity migration"],
-        postIds: ["1782414526101000195", "1782414526101000225"],
-        attentionVelocity: 83,
-        sourceCredibility: 82,
-        crossClusterSpread: 70,
-        mechanismDensity: 86,
-        investigability: 84,
-        marketSensitivity: 80,
-        timeliness: 90,
-        confidence: 80,
-        stage: "accelerating",
-        publishability: "Worth a dashboard build",
-        shortThesis: "Automated collateral routing may be changing lending rate discovery, but public dashboards under-explain borrower quality and marginal liquidity.",
-        whyNow: "Smart-money commentary moved from TVL to how routing changes lending market structure.",
-        nextSteps: ["Track net deposits by asset and user cohort", "Compare borrow-rate elasticity with Morpho and Aave", "Separate organic rate demand from incentives", "Measure liquidation buffer changes"],
-        notePanels: {
-          markets: "Liquidity migration can alter borrow rates, collateral preferences, and yield routing across money markets.",
-          nonConsensus: "Most attention is product-led; the research angle is market-structure impact.",
-          missing: "Borrower cohort data, incentive-adjusted yields, liquidation paths, and rate-curve sensitivity.",
-          note: "Fluid and the next lending UX wedge: routing as market structure."
-        }
-      },
-      {
-        id: "sig-angstrom-solvers",
-        topic: "Angstrom solver-market observability",
-        protocolId: "angstrom",
-        narrativeTags: ["Intent / solver infrastructure", "DEXs", "MEV"],
-        postIds: ["1782414526101000201", "1782414526101000231"],
-        attentionVelocity: 76,
-        sourceCredibility: 73,
-        crossClusterSpread: 69,
-        mechanismDensity: 90,
-        investigability: 82,
-        marketSensitivity: 74,
-        timeliness: 86,
-        confidence: 74,
-        stage: "emerging",
-        publishability: "Worth a short thread",
-        shortThesis: "Solver competition could become a visible research surface before broad dashboards exist.",
-        whyNow: "Intent discussions are shifting from architecture to measurable auction outcomes.",
-        nextSteps: ["Define solver concentration metrics", "Track failed auctions and rebate leakage", "Compare effective price improvement", "Identify LP surplus retention"],
-        notePanels: {
-          markets: "If solver competition improves execution quality, DEX order flow and LP economics may reprice.",
-          nonConsensus: "The edge is not volume; it is auction quality and solver concentration.",
-          missing: "Auction logs, price improvement data, solver identities, and failed-settlement rates.",
-          note: "The solver dashboard DeFi is missing: measuring auction quality before consensus forms."
-        }
-      },
-      {
-        id: "sig-usdx-watch",
-        topic: "USDx renewed stablecoin attention",
-        protocolId: "usdx",
-        narrativeTags: ["Stablecoins", "Token incentives"],
-        postIds: ["1782414526101000241"],
-        attentionVelocity: 72,
-        sourceCredibility: 62,
-        crossClusterSpread: 53,
-        mechanismDensity: 70,
-        investigability: 70,
-        marketSensitivity: 76,
-        timeliness: 82,
-        confidence: 63,
-        stage: "emerging",
-        publishability: "Worth monitoring",
-        shortThesis: "Attention is rising around a lightly covered stablecoin, but the current evidence base is thin.",
-        whyNow: "Mentions are entering stablecoin research circles, but credible corroboration is still limited.",
-        nextSteps: ["Check collateral docs", "Find TVL and supply source of truth", "Monitor credible researcher mentions", "Watch incentive campaigns"],
-        notePanels: {
-          markets: "Stablecoin growth can quickly affect collateral demand and yield flows.",
-          nonConsensus: "The undercoverage is obvious; the question is whether attention is durable.",
-          missing: "Primary docs, credible source corroboration, supply history, and venue distribution.",
-          note: "USDx watch: separating early stablecoin smoke from incentive noise."
-        }
-      },
-      {
-        id: "sig-sky-governance",
-        topic: "Sky parameter debate is important but crowded",
-        protocolId: "sky",
-        narrativeTags: ["CDPs", "Governance wars", "Stablecoins"],
-        postIds: ["1782414526101000192"],
-        attentionVelocity: 55,
-        sourceCredibility: 84,
-        crossClusterSpread: 58,
-        mechanismDensity: 80,
-        investigability: 62,
-        marketSensitivity: 85,
-        timeliness: 60,
-        confidence: 79,
-        stage: "crowded",
-        publishability: "Too crowded / consensus",
-        shortThesis: "Governance changes matter, but analytics coverage is mature and obvious angles are already well served.",
-        whyNow: "A parameter debate is live, but existing dashboards already capture most first-order KPIs.",
-        nextSteps: ["Look for a variant perception angle", "Avoid duplicating existing dashboards", "Monitor only if peg or collateral risk changes"],
-        notePanels: {
-          markets: "Sky remains market-sensitive through collateral policy and stablecoin rates.",
-          nonConsensus: "The research alpha is low unless a new parameter creates a non-obvious market impact.",
-          missing: "A differentiated mechanism angle beyond standard governance recap.",
-          note: "Sky parameter monitoring: important, but probably not a fresh deep-dive."
-        }
-      },
-      {
-        id: "sig-ethena-consensus",
-        topic: "Ethena remains documented consensus",
-        protocolId: "ethena",
-        narrativeTags: ["Stablecoins", "Perps", "Yield abstraction"],
-        postIds: ["1782414526101000196"],
-        attentionVelocity: 68,
-        sourceCredibility: 92,
-        crossClusterSpread: 74,
-        mechanismDensity: 82,
-        investigability: 64,
-        marketSensitivity: 89,
-        timeliness: 62,
-        confidence: 87,
-        stage: "crowded",
-        publishability: "Too crowded / consensus",
-        shortThesis: "Ethena remains important, but a new note needs a sharp non-consensus basis or venue concentration angle.",
-        whyNow: "Attention is consistently high, but dashboards and public research are already mature.",
-        nextSteps: ["Only pursue if basis stress changes", "Monitor venue concentration", "Compare to undercovered synthetic-dollar entrants"],
-        notePanels: {
-          markets: "Basis, exchange venue concentration, and stablecoin supply remain market-sensitive.",
-          nonConsensus: "Consensus already understands the headline mechanism; alpha must be specific.",
-          missing: "A new dislocation in basis, counterparty risk, or flow composition.",
-          note: "Ethena follow-up only if a hidden basis or venue concentration variant emerges."
-        }
-      }
-    ];
-
-    const alertRules = [
-      { id: "credible-mentions", name: "Sudden credible mentions", enabled: true, threshold: "3 high-weight accounts / 60m" },
-      { id: "new-protocol", name: "New protocol velocity", enabled: true, threshold: "Velocity > 70 and maturity emerging" },
-      { id: "governance", name: "Governance controversy", enabled: true, threshold: "Governance keyword spike" },
-      { id: "liquidity", name: "TVL / liquidity / fee spike", enabled: true, threshold: "Market sensitivity > 75" },
-      { id: "stable-risk", name: "Stablecoin depeg concern", enabled: true, threshold: "Peg/collateral terms + credible source" },
-      { id: "coverage-gap", name: "Dashboard gap score", enabled: true, threshold: "Coverage Gap > 40" }
-    ];
-
+    let posts = [];
+    let signalClusters = [];
+    let alertRules = [];
+    
     const savedPresets = [
       { id: "undercovered-stables", label: "Undercovered stablecoins", filters: { narrative: "Stablecoins", stage: "all", publishability: "all", credibility: "all", keyword: "", minGap: 40 } },
       { id: "governance-spikes", label: "Governance spikes", filters: { narrative: "Governance wars", keyword: "governance", credibility: "all", minGap: 0 } },
       { id: "new-lending", label: "New lending protocols", filters: { narrative: "Lending", keyword: "", stage: "emerging", minGap: 20 } },
       { id: "high-cred-emerging", label: "High-cred emerging signals", filters: { credibility: "high", stage: "emerging", keyword: "", minGap: 20 } }
     ];
+
+    async function loadApiData() {
+      try {
+        const [clustersRes, alertsRes] = await Promise.all([
+          fetch('/api/clusters').then(r => r.json()).catch(() => ({items: []})),
+          fetch('/api/alerts').then(r => r.json()).catch(() => ({items: []}))
+        ]);
+        
+        const postMap = new Map();
+        const protoMap = new Map();
+        
+        signalClusters = (clustersRes.items || []).map((c, i) => {
+          const score = c.researchAlphaScore || 0;
+          
+          if (c.posts) {
+            c.posts.forEach(p => {
+               if (!postMap.has(p.id)) {
+                   postMap.set(p.id, {
+                      postId: String(p.id),
+                      authorHandle: p.username || "unknown",
+                      authorDisplayName: p.username || "Unknown",
+                      timestamp: p.postedAt ? (new Date() - new Date(p.postedAt)) / -60000 : 0,
+                      textSnippet: p.textContent || "",
+                      engagement: { likes: p.likesCount || 0, reposts: p.retweetsCount || 0, replies: p.repliesCount || 0 },
+                      credibilityWeight: 80,
+                      canonicalXUrl: p.canonicalXUrl,
+                      hashtags: []
+                   });
+               }
+            });
+          }
+
+          const protocolId = "proto-" + i;
+          if (!protoMap.has(protocolId)) {
+             protoMap.set(protocolId, {
+                id: protocolId,
+                name: c.topic || c.name || "Unknown Protocol",
+                maturity: "emerging",
+                category: narratives[i % narratives.length],
+                dashboardMaturity: 20,
+                publicDashboards: 1,
+                analyticsPages: 1,
+                deepKpis: 10,
+                governanceCoverage: 10,
+                revenueCoverage: 10,
+                socialAttention: 50 + (score * 50),
+                xUrl: c.primaryXUrl
+             });
+          }
+
+          return {
+            id: String(c.id),
+            topic: c.topic || c.name || `Cluster ${c.id}`,
+            protocolId: protocolId,
+            narrativeTags: [narratives[i % narratives.length]],
+            postIds: (c.posts || []).map(p => String(p.id)),
+            attentionVelocity: score * 100,
+            sourceCredibility: 80,
+            crossClusterSpread: 50,
+            mechanismDensity: 70,
+            investigability: 80,
+            marketSensitivity: 75,
+            timeliness: 90,
+            confidence: (c.confidenceScore || 0) * 100,
+            stage: c.postCount > 5 ? "accelerating" : "emerging",
+            publishability: score > 0.8 ? "Worth a deep-dive note" : (score > 0.5 ? "Worth a short thread" : "Worth monitoring"),
+            shortThesis: c.description || "Auto-generated cluster based on recent X posts.",
+            whyNow: "System generated cluster based on recent posts.",
+            nextSteps: ["Investigate posts", "Check protocol docs"],
+            notePanels: {
+              markets: "General market impact to be determined.",
+              nonConsensus: "To be determined.",
+              missing: "Detailed metrics missing.",
+              note: "Consider deep dive."
+            },
+            protocol: protoMap.get(protocolId)
+          };
+        });
+        
+        posts = Array.from(postMap.values());
+        protocols = Array.from(protoMap.values());
+        
+        alertRules = (alertsRes.items || []).map(a => ({
+          id: String(a.id),
+          name: a.name,
+          enabled: a.isActive,
+          threshold: `Alpha > ${a.alphaScoreThreshold}`
+        }));
+      } catch (err) {
+        console.error("API load failed, falling back to empty:", err);
+      }
+    }
 
     const state = {
       activeSection: "overview",
@@ -2868,8 +2757,9 @@
       renderAll();
     }
 
-    function boot() {
+    async function boot() {
       initNav();
+      await loadApiData();
       initFilters();
       initEvents();
       syncFilterInputs();
