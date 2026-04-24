@@ -22,12 +22,20 @@ from sqlalchemy import (
     Float,
     ForeignKey,
     Index,
-    UniqueConstraint,
+    Table,
 )
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
 Base = declarative_base()
+
+# Association table for many-to-many Post ↔ SignalCluster
+post_clusters = Table(
+    "post_clusters",
+    Base.metadata,
+    Column("post_id", Integer, ForeignKey("posts.id", ondelete="CASCADE"), primary_key=True),
+    Column("cluster_id", Integer, ForeignKey("signal_clusters.id", ondelete="CASCADE"), primary_key=True),
+)
 
 
 class Account(Base):
@@ -100,7 +108,7 @@ class Post(Base):
 
     # Relationships
     account = relationship("Account", back_populates="posts")
-    cluster_assignments = relationship("SignalCluster", secondary="post_clusters", back_populates="posts")
+    cluster_assignments = relationship("SignalCluster", secondary=post_clusters, back_populates="posts")
 
     __table_args__ = (
         Index("ix_posts_x_id", "x_id"),
@@ -131,8 +139,8 @@ class SignalCluster(Base):
     # Relationships
     posts = relationship(
         "Post",
-        secondary="post_clusters",
-        back_populates="cluster_assignments"
+        secondary=post_clusters,
+        back_populates="cluster_assignments",
     )
 
     __table_args__ = (
@@ -213,18 +221,3 @@ class IngestionRun(Base):
         Index("ix_ingestion_runs_started_at", "started_at"),
         Index("ix_ingestion_runs_status", "status"),
     )
-
-
-# Association table for many-to-many relationship between Posts and SignalClusters
-class PostCluster:
-    """Association table for post-to-cluster relationships"""
-    __tablename__ = "post_clusters"
-
-    # Create this using raw SQL in migration since SQLAlchemy doesn't handle this well
-    # This will be: CREATE TABLE post_clusters (
-    #     post_id INTEGER NOT NULL,
-    #     cluster_id INTEGER NOT NULL,
-    #     PRIMARY KEY (post_id, cluster_id),
-    #     FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
-    #     FOREIGN KEY (cluster_id) REFERENCES signal_clusters(id) ON DELETE CASCADE
-    # )
