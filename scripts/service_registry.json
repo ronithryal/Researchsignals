@@ -1,0 +1,64 @@
+{
+  "services": [
+    {
+      "name": "Apify",
+      "env_var": "APIFY_API_TOKEN",
+      "signup_url": "https://console.apify.com/sign-up",
+      "dashboard_url": "https://console.apify.com/account/integrations",
+      "onboard_script": "scripts/onboard_apify.py",
+      "priority": 1,
+      "required_for_mvp": true,
+      "cost": "$5/month",
+      "free_tier": false,
+      "status": "pending",
+      "agentmail_inbox": null,
+      "api_key_retrieved": false,
+      "notes": "Twitter scraper actor. Sign up, verify email, go to Settings > Integrations > API tokens."
+    },
+    {
+      "name": "Anthropic",
+      "env_var": "ANTHROPIC_API_KEY",
+      "signup_url": "https://console.anthropic.com",
+      "dashboard_url": "https://console.anthropic.com/settings/keys",
+      "onboard_script": "scripts/onboard_anthropic.py",
+      "priority": 2,
+      "required_for_mvp": true,
+      "cost": "pay-per-use (~$5/month at normal usage)",
+      "free_tier": false,
+      "status": "pending",
+      "agentmail_inbox": null,
+      "api_key_retrieved": false,
+      "notes": "Claude API for Analyst Copilot. Add a credit card, generate an API key."
+    },
+    {
+      "name": "X API Basic",
+      "env_var": "X_API_BEARER_TOKEN",
+      "signup_url": "https://developer.x.com/en/portal/petition/essential/basic-info",
+      "dashboard_url": "https://developer.x.com/en/portal/dashboard",
+      "onboard_script": "scripts/onboard_xapi.py",
+      "priority": 3,
+      "required_for_mvp": false,
+      "cost": "$100/month",
+      "free_tier": false,
+      "status": "pending",
+      "agentmail_inbox": null,
+      "api_key_retrieved": false,
+      "notes": "Fallback if Apify breaks. Apply now; approval takes 2-7 days. Set DATA_PROVIDER=xapi in .env once approved."
+    },
+    {
+      "name": "Dune",
+      "env_var": "DUNE_API_KEY",
+      "signup_url": "https://dune.com/auth/register",
+      "dashboard_url": "https://dune.com/settings/api",
+      "onboard_script": "scripts/onboard_dune.py",
+      "priority": 4,
+      "required_for_mvp": false,
+      "cost": "free tier (2500 datapoints/day)",
+      "free_tier": true,
+      "status": "pending",
+      "agentmail_inbox": null,
+      "api_key_retrieved": false,
+      "notes": "Phase 6 only. Coverage Gap works without it using DefiLlama alone."
+    }
+  ]
+}

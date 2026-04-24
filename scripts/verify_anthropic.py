@@ -1,0 +1,22 @@
+"""
+Confirms ANTHROPIC_API_KEY in .env is valid.
+Run: python scripts/verify_anthropic.py
+"""
+import os
+import anthropic
+from dotenv import load_dotenv
+
+load_dotenv()
+
+key = os.environ.get("ANTHROPIC_API_KEY", "")
+if not key:
+    print("FAIL — ANTHROPIC_API_KEY is empty in .env")
+    raise SystemExit(1)
+
+client = anthropic.Anthropic(api_key=key)
+msg = client.messages.create(
+    model="claude-haiku-4-5-20251001",
+    max_tokens=16,
+    messages=[{"role": "user", "content": "say ok"}],
+)
+print(f"OK — Claude responded: {msg.content[0].text}")
