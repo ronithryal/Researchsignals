@@ -18,7 +18,7 @@ anthropic==0.34.2
 
 # NLP / clustering
 scikit-learn==1.5.2
-numpy==2.1.1
+numpy==1.26.4
 
 # validation
 pydantic==2.9.2
