@@ -30,6 +30,7 @@ class Settings(BaseSettings):
     enable_provider_fallback: bool = True
     copilot_model: str = "claude-sonnet-4-6"
     coverage_cache_ttl_seconds: int = 21600
+    json_logs: bool = False
 
 
 settings = Settings()

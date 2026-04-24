@@ -23,13 +23,13 @@ originSessionId: e4f313f4-e654-421b-9b98-fea7e450bb4e
 | **2** | Database — 8 SQLAlchemy models, Alembic config, initial migration, `.env.example` | ✅ Done | Haiku 4.5 | Schema design done |
 | **3** | Core modules — `fetch_new_posts`, `run_clustering`, `score_cluster`, `enrich_protocol`, `generate_brief` | ✅ Done | Sonnet 4.6 | Done this session |
 | **4** | FastAPI routes — `/api/posts`, `/api/clusters`, `/api/clusters/{id}/brief`, `/api/protocols/{id}`, `/api/alerts`, `/api/ingestion/status` | ✅ Done | Sonnet 4.6 (routes) / Haiku 4.5 (alert CRUD) | Module wiring needs judgment |
-| **5** | Frontend UI — static HTML dashboard: top clusters by alpha score, cluster detail, protocol search, alert config | ✅ Done | Sonnet 4.6 or Gemini 2.5 Pro | Wired UI to FastAPI backend endpoints |
+| **5** | Frontend UI — static HTML dashboard: top clusters by alpha score, cluster detail, protocol search, alert config | ✅ Done | Sonnet 4.6 or Gemini 3.1 Pro | Wired UI to FastAPI backend endpoints |
 | **6** | APScheduler — ingestion every 30 min, clustering + scoring pipeline, stale-data alert after 120 min | ✅ Done | Haiku 4.5 (job wiring) / Sonnet 4.6 (alert logic) | Scheduler wired into app lifecycle with pipeline + stale-data check jobs |
 | **7** | Tests — unit (scoring formula, clustering logic, no DB) + integration (Postgres: ingestion, copilot) | ✅ Done | Qwen/Deepseek (unit) / Haiku 4.5 (integration) | Added unit + integration suites; integration tests skip when Postgres is unavailable |
 | **8** | Error handling & retry logic — httpx retries, ingestion fallback, partial failure recovery | ✅ Done | Haiku 4.5 | Added HTTP retry/backoff, provider fallback, and partial-handle recovery for X API |
-| **9** | Logging & monitoring — structured logs, IngestionRun dashboard, stale-data alerts | ⬜ | Gemini Flash | Config + boilerplate |
-| **10** | Docker Compose refinement — healthchecks, volume mounts, env wiring | ⬜ | Qwen/Deepseek | Pure config |
-| **11** | Deployment docs — README, runbook, `.env.example` completion | ⬜ | Gemini Flash | Writing task |
+| **9** | Logging & monitoring — structured logs, IngestionRun dashboard, stale-data alerts | ✅ Done | Gemini Flash | Implemented structured JSON logging and enhanced ingestion status dashboard |
+| **10** | Docker Compose refinement — healthchecks, volume mounts, env wiring | ✅ Done | Gemini Flash | Added healthchecks for API and Postgres services |
+| **11** | Deployment docs — README, runbook, `.env.example` completion | ✅ Done | Gemini Flash | Created README.md and completed .env.example with all settings |
 
 ---
 

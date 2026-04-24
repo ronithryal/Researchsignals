@@ -261,39 +261,45 @@ async def delete_alert(alert_id: int):
 
 
 @router.get("/ingestion/status")
-async def ingestion_status():
+async def ingestion_status(limit: int = Query(default=10, ge=1, le=50)):
     async with get_session() as db:
-        run = (
-            await db.execute(select(IngestionRun).order_by(IngestionRun.started_at.desc()).limit(1))
-        ).scalar_one_or_none()
+        result = await db.execute(
+            select(IngestionRun).order_by(IngestionRun.started_at.desc()).limit(limit)
+        )
+        runs = result.scalars().all()
 
-    if run is None:
+    if not runs:
         return {
             "hasRun": False,
             "status": "never_run",
             "isStale": True,
             "staleThresholdMinutes": settings.stale_data_threshold_minutes,
-            "latestRun": None,
+            "recentRuns": [],
         }
 
-    completed_at = run.completed_at or run.started_at
+    latest = runs[0]
+    completed_at = latest.completed_at or latest.started_at
     stale_cutoff = datetime.now(timezone.utc) - timedelta(minutes=settings.stale_data_threshold_minutes)
     completed_aware = completed_at.replace(tzinfo=timezone.utc) if completed_at.tzinfo is None else completed_at
     is_stale = completed_aware < stale_cutoff
 
     return {
         "hasRun": True,
-        "status": run.status,
+        "status": latest.status,
         "isStale": is_stale,
         "staleThresholdMinutes": settings.stale_data_threshold_minutes,
-        "latestRun": {
-            "id": run.id,
-            "source": run.source,
-            "startedAt": run.started_at,
-            "completedAt": run.completed_at,
-            "postsIngested": run.posts_ingested,
-            "postsNew": run.posts_new,
-            "postsUpdated": run.posts_updated,
-            "errorMessage": run.error_message,
-        },
+        "recentRuns": [
+            {
+                "id": run.id,
+                "source": run.source,
+                "status": run.status,
+                "startedAt": run.started_at,
+                "completedAt": run.completed_at,
+                "postsIngested": run.posts_ingested,
+                "postsNew": run.posts_new,
+                "postsUpdated": run.posts_updated,
+                "errorMessage": run.error_message,
+            }
+            for run in runs
+        ],
     }
