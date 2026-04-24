@@ -3,8 +3,19 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 
 from app.api.routes.phase4 import router as phase4_router
+from app.scheduler import start_scheduler, stop_scheduler
 
 app = FastAPI(title="DeFi Signal Terminal")
+
+
+@app.on_event("startup")
+async def on_startup() -> None:
+    start_scheduler()
+
+
+@app.on_event("shutdown")
+async def on_shutdown() -> None:
+    stop_scheduler()
 
 # serve the frontend prototype
 app.mount("/static", StaticFiles(directory="frontend"), name="static")
