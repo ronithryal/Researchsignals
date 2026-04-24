@@ -62,3 +62,22 @@ python scripts/verify_all.py        # confirms all keys in .env work
 - `app/clustering/__init__.py` — public: `run_clustering(posts)`
 - `app/enrichment/__init__.py` — public: `enrich_protocol(protocol_id)`
 - `app/copilot/__init__.py` — public: `generate_brief(cluster_id)`
+
+## Skill routing
+
+When the user's request matches an available skill, invoke it via the Skill tool. The
+skill has multi-step workflows, checklists, and quality gates that produce better
+results than an ad-hoc answer. When in doubt, invoke the skill. A false positive is
+cheaper than a false negative.
+
+Key routing rules:
+- Bugs, errors, "why is this broken", "wtf", "this doesn't work" → invoke /investigate
+- Test the site, find bugs, "does this work" → invoke /qa (or /qa-only for report only)
+- Code review, check the diff, "look at my changes" → invoke /review
+- Ship, deploy, create a PR, "send it" → invoke /ship
+- Merge + deploy + verify → invoke /land-and-deploy
+- Post-deploy monitoring → invoke /canary
+- Update docs after shipping → invoke /document-release
+- Security audit, OWASP, "is this secure" → invoke /cso
+- Save progress, "save my work" → invoke /context-save
+- Resume, restore, "where was I" → invoke /context-restore
