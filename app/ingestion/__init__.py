@@ -105,6 +105,37 @@ def _parse_apify_item(item: dict) -> Optional[dict]:
     }
 
 
+async def _request_with_retries(
+    client: httpx.AsyncClient,
+    method: str,
+    url: str,
+    *,
+    retries: int,
+    retry_backoff_seconds: float,
+    retryable_status_codes: tuple[int, ...] = (408, 429, 500, 502, 503, 504),
+    **kwargs,
+) -> httpx.Response:
+    """HTTP request with simple exponential backoff for transient failures."""
+    attempt = 0
+    while True:
+        try:
+            resp = await client.request(method, url, **kwargs)
+            if resp.status_code in retryable_status_codes:
+                raise httpx.HTTPStatusError(
+                    f"Retryable HTTP {resp.status_code}",
+                    request=resp.request,
+                    response=resp,
+                )
+            return resp
+        except (httpx.TimeoutException, httpx.NetworkError, httpx.HTTPStatusError) as exc:
+            if attempt >= retries:
+                raise
+            delay = retry_backoff_seconds * (2**attempt)
+            attempt += 1
+            log.warning("Retrying %s %s in %.1fs after error: %s", method, url, delay, exc)
+            await asyncio.sleep(delay)
+
+
 # ---------------------------------------------------------------------------
 # Data provider: Apify
 # ---------------------------------------------------------------------------
@@ -117,8 +148,12 @@ async def _apify_fetch(handles: list[str]) -> list[dict]:
 
     async with httpx.AsyncClient(timeout=30) as client:
         # Start run
-        resp = await client.post(
+        resp = await _request_with_retries(
+            client,
+            "POST",
             f"{_APIFY_BASE}/acts/{_APIFY_ACTOR}/runs",
+            retries=settings.ingestion_http_retries,
+            retry_backoff_seconds=settings.ingestion_retry_backoff_seconds,
             params={"token": settings.apify_api_token},
             json={
                 "startUrls": [{"url": f"https://twitter.com/{h}"} for h in handles],
@@ -133,8 +168,12 @@ async def _apify_fetch(handles: list[str]) -> list[dict]:
         dataset_id: Optional[str] = None
         for _ in range(60):
             await asyncio.sleep(5)
-            poll = await client.get(
+            poll = await _request_with_retries(
+                client,
+                "GET",
                 f"{_APIFY_BASE}/actor-runs/{run_id}",
+                retries=settings.ingestion_http_retries,
+                retry_backoff_seconds=settings.ingestion_retry_backoff_seconds,
                 params={"token": settings.apify_api_token},
             )
             run_data = poll.json()["data"]
@@ -149,8 +188,12 @@ async def _apify_fetch(handles: list[str]) -> list[dict]:
             raise TimeoutError("Apify run did not complete within 5 minutes")
 
         # Fetch dataset items
-        items_resp = await client.get(
+        items_resp = await _request_with_retries(
+            client,
+            "GET",
             f"{_APIFY_BASE}/datasets/{dataset_id}/items",
+            retries=settings.ingestion_http_retries,
+            retry_backoff_seconds=settings.ingestion_retry_backoff_seconds,
             params={"token": settings.apify_api_token, "limit": 500},
         )
         items_resp.raise_for_status()
@@ -175,18 +218,23 @@ async def _xapi_fetch(handles: list[str]) -> list[dict]:
 
     async with httpx.AsyncClient(timeout=30, headers=headers) as client:
         for handle in handles:
-            resp = await client.get(
-                f"{_XAPI_BASE}/tweets/search/recent",
-                params={
-                    "query": f"from:{handle} -is:retweet",
-                    "max_results": 10,
-                    "tweet.fields": "created_at,public_metrics,author_id",
-                    "expansions": "author_id",
-                    "user.fields": "username,name,public_metrics",
-                },
-            )
-            if resp.status_code != 200:
-                log.warning("X API error for @%s: HTTP %s", handle, resp.status_code)
+            try:
+                resp = await _request_with_retries(
+                    client,
+                    "GET",
+                    f"{_XAPI_BASE}/tweets/search/recent",
+                    retries=settings.ingestion_http_retries,
+                    retry_backoff_seconds=settings.ingestion_retry_backoff_seconds,
+                    params={
+                        "query": f"from:{handle} -is:retweet",
+                        "max_results": 10,
+                        "tweet.fields": "created_at,public_metrics,author_id",
+                        "expansions": "author_id",
+                        "user.fields": "username,name,public_metrics",
+                    },
+                )
+            except Exception as exc:
+                log.warning("Skipping handle @%s due to X API failure: %s", handle, exc)
                 continue
 
             body = resp.json()
@@ -200,24 +248,27 @@ async def _xapi_fetch(handles: list[str]) -> list[dict]:
                 likes = m.get("like_count", 0)
                 rts = m.get("retweet_count", 0)
                 reps = m.get("reply_count", 0)
-                results.append(
-                    {
-                        "tweet_id": tid,
-                        "text": tweet["text"],
-                        "username": uname,
-                        "x_author_id": tweet.get("author_id", uname),
-                        "display_name": author.get("name", uname),
-                        "follower_count": author.get("public_metrics", {}).get(
-                            "followers_count", 0
-                        ),
-                        "canonical_x_url": f"https://x.com/{uname}/status/{tid}",
-                        "posted_at": _parse_dt(tweet.get("created_at", "")),
-                        "likes_count": likes,
-                        "retweets_count": rts,
-                        "replies_count": reps,
-                        "engagement_score": _engagement(likes, rts, reps),
-                    }
-                )
+                try:
+                    results.append(
+                        {
+                            "tweet_id": tid,
+                            "text": tweet["text"],
+                            "username": uname,
+                            "x_author_id": tweet.get("author_id", uname),
+                            "display_name": author.get("name", uname),
+                            "follower_count": author.get("public_metrics", {}).get(
+                                "followers_count", 0
+                            ),
+                            "canonical_x_url": f"https://x.com/{uname}/status/{tid}",
+                            "posted_at": _parse_dt(tweet.get("created_at", "")),
+                            "likes_count": likes,
+                            "retweets_count": rts,
+                            "replies_count": reps,
+                            "engagement_score": _engagement(likes, rts, reps),
+                        }
+                    )
+                except Exception as exc:
+                    log.warning("Skipping malformed X tweet for @%s: %s", handle, exc)
 
     return results
 
@@ -242,6 +293,32 @@ async def _upsert_account(db: AsyncSession, item: dict) -> int:
         account.follower_count = item["follower_count"]
         account.last_checked_at = datetime.utcnow()
     return account.id
+
+
+async def _fetch_with_provider_fallback(primary_provider: str, handles: list[str]) -> tuple[str, list[dict]]:
+    """Fetch from primary provider, falling back to the other provider if configured and needed."""
+
+    async def _fetch(provider: str) -> list[dict]:
+        if provider == "apify":
+            return await _apify_fetch(handles)
+        if provider == "xapi":
+            return await _xapi_fetch(handles)
+        raise ValueError(f"Unsupported data provider: {provider}")
+
+    fallback_provider = "xapi" if primary_provider == "apify" else "apify"
+
+    try:
+        return primary_provider, await _fetch(primary_provider)
+    except Exception as primary_exc:
+        if not settings.enable_provider_fallback:
+            raise
+        log.warning(
+            "Primary provider %s failed (%s). Attempting fallback provider %s",
+            primary_provider,
+            primary_exc,
+            fallback_provider,
+        )
+        return f"{primary_provider}->{fallback_provider}", await _fetch(fallback_provider)
 
 
 async def _upsert_posts(db: AsyncSession, normalized: list[dict]) -> list[Post]:
@@ -305,17 +382,21 @@ async def fetch_new_posts() -> list[Post]:
             )
             handles = list(handles_result.scalars().all())
 
+            effective_source = settings.data_provider
+
             if not handles:
                 log.info("No active accounts in DB — ingestion no-op")
                 normalized: list[dict] = []
-            elif settings.data_provider == "apify":
-                normalized = await _apify_fetch(handles)
             else:
-                normalized = await _xapi_fetch(handles)
+                effective_source, normalized = await _fetch_with_provider_fallback(
+                    settings.data_provider,
+                    handles,
+                )
 
             new_posts = await _upsert_posts(db, normalized)
 
             run.status = "completed"
+            run.source = effective_source
             run.completed_at = datetime.now(timezone.utc)
             run.posts_ingested = len(normalized)
             run.posts_new = len(new_posts)
@@ -323,7 +404,7 @@ async def fetch_new_posts() -> list[Post]:
 
             log.info(
                 "Ingestion done: provider=%s fetched=%d new=%d",
-                settings.data_provider,
+                effective_source,
                 len(normalized),
                 len(new_posts),
             )

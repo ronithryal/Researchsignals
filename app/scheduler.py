@@ -51,10 +51,14 @@ async def run_stale_data_check_job() -> None:
     """Emit a stale-data alert if the latest ingestion run is older than threshold."""
     now = datetime.now(timezone.utc)
 
-    async with get_session() as db:
-        latest_run = (
-            await db.execute(select(IngestionRun).order_by(IngestionRun.started_at.desc()).limit(1))
-        ).scalar_one_or_none()
+    try:
+        async with get_session() as db:
+            latest_run = (
+                await db.execute(select(IngestionRun).order_by(IngestionRun.started_at.desc()).limit(1))
+            ).scalar_one_or_none()
+    except Exception:
+        log.exception("STALE_DATA_ALERT_CHECK_FAILED: unable to query ingestion_runs")
+        return
 
     if latest_run is None:
         log.warning(

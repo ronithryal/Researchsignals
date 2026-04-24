@@ -25,6 +25,9 @@ class Settings(BaseSettings):
     internal_api_token: str = ""
     ingestion_interval_seconds: int = 1800
     stale_data_threshold_minutes: int = 120
+    ingestion_http_retries: int = 2
+    ingestion_retry_backoff_seconds: float = 1.0
+    enable_provider_fallback: bool = True
     copilot_model: str = "claude-sonnet-4-6"
     coverage_cache_ttl_seconds: int = 21600
 

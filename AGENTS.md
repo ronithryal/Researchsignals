@@ -7,7 +7,7 @@ Personal internal research tool. Monitors crypto Twitter/X, clusters posts into 
 - Database: Postgres via Docker Compose
 - X data: Apify Twitter actor (primary) / X API Basic (fallback)
 - Frontend: `frontend/index.html` — static file served by FastAPI at `/`
-- LLM: Claude Sonnet 4.6 (Analyst Copilot only, on-demand)
+- LLM: Codex Sonnet 4.6 (Analyst Copilot only, on-demand)
 
 ## Local dev
 ```bash
